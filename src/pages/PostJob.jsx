@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createJob } from '../services/jobService';
 import { HiOutlineBriefcase, HiOutlineBuildingOffice2, HiOutlineCurrencyDollar } from 'react-icons/hi2';
 import StatusAlert from '../components/StatusAlert';
@@ -14,6 +15,7 @@ const INITIAL_FORM_DATA = {
 };
 
 const PostJob = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -32,6 +34,13 @@ const PostJob = () => {
       setMessageType('success');
       setMessage('Job posted successfully.');
       setFormData(INITIAL_FORM_DATA);
+      sessionStorage.setItem(
+        'jobmatch_manage_jobs_notice',
+        JSON.stringify({ message: 'Job posted successfully.', type: 'success' })
+      );
+      window.setTimeout(() => {
+        navigate('/manage-jobs');
+      }, 900);
     } catch (error) {
       setMessageType('error');
       setMessage(error?.response?.data?.message || 'Failed to post job. Please try again.');

@@ -7,6 +7,7 @@ import { getJobs } from '../services/jobService';
 import { getApplicants } from '../services/applicationService';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import StatusAlert from '../components/StatusAlert';
 
 const ManageJobs = () => {
   const { user } = useAuth();
@@ -14,6 +15,24 @@ const ManageJobs = () => {
   const [applicantsByJob, setApplicantsByJob] = useState({});
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('success');
+
+  useEffect(() => {
+    const rawNotice = sessionStorage.getItem('jobmatch_manage_jobs_notice');
+    if (!rawNotice) return;
+
+    try {
+      const notice = JSON.parse(rawNotice);
+      setMessage(notice?.message || '');
+      setMessageType(notice?.type || 'success');
+    } catch {
+      setMessage('');
+      setMessageType('success');
+    } finally {
+      sessionStorage.removeItem('jobmatch_manage_jobs_notice');
+    }
+  }, []);
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -90,6 +109,15 @@ const ManageJobs = () => {
   return (
     <div className="page-shell">
       <div className="page-container space-y-8">
+        <StatusAlert
+          message={message}
+          variant={messageType}
+          onClose={() => setMessage('')}
+          autoHide={messageType === 'success'}
+          duration={120000}
+          floating
+          className="right-6 top-6"
+        />
         <div className="hero-panel">
           <p className="hero-kicker">
             <HiOutlineClipboardDocumentList className="h-4 w-4" />
