@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { createJob } from '../services/jobService';
 import { HiOutlineBriefcase, HiOutlineBuildingOffice2, HiOutlineCurrencyDollar } from 'react-icons/hi2';
 import StatusAlert from '../components/StatusAlert';
 
+const INITIAL_FORM_DATA = {
+  title: '',
+  company: '',
+  location: '',
+  type: 'Full-time',
+  salary: '',
+  description: '',
+  requirements: '',
+};
+
 const PostJob = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '', company: '', location: '', type: 'Full-time', salary: '', description: '', requirements: ''
-  });
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('success');
@@ -25,9 +31,7 @@ const PostJob = () => {
       await createJob(formData);
       setMessageType('success');
       setMessage('Job posted successfully.');
-      window.setTimeout(() => {
-        navigate('/manage-jobs');
-      }, 700);
+      setFormData(INITIAL_FORM_DATA);
     } catch (error) {
       setMessageType('error');
       setMessage(error?.response?.data?.message || 'Failed to post job. Please try again.');
@@ -52,6 +56,9 @@ const PostJob = () => {
         variant={messageType}
         onClose={() => setMessage('')}
         autoHide={messageType === 'success'}
+        duration={120000}
+        floating
+        className="right-6 top-6"
       />
 
       <form onSubmit={handleSubmit} className="space-y-6 surface-card p-6 md:p-8">

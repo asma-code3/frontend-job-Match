@@ -16,20 +16,27 @@ import {
 } from 'react-icons/hi2';
 
 const EmployerDashboard = () => {
-  const [data, setData] = useState({ activeJobs: 0, totalApplicants: 0, interviews: 0, recentApplicants: [] });
+  const [data, setData] = useState({
+    activeJobs: 0,
+    totalApplicants: 0,
+    interviews: 0,
+    hired: 0,
+    pending: 0,
+    rejected: 0,
+    review: 0,
+    recentApplicants: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const insights = useMemo(() => {
-    const list = data?.recentApplicants || [];
-    const byStatus = (status) => list.filter((item) => item.status === status).length;
     return {
-      hired: byStatus('Hired'),
-      interview: byStatus('Interview'),
-      pending: byStatus('Pending'),
-      rejected: byStatus('Rejected'),
+      hired: data?.hired || 0,
+      interview: data?.interviews || 0,
+      pending: data?.pending || 0,
+      rejected: data?.rejected || 0,
     };
-  }, [data?.recentApplicants]);
+  }, [data?.hired, data?.interviews, data?.pending, data?.rejected]);
 
   const conversionRate = data.totalApplicants > 0 ? Math.round((insights.hired / data.totalApplicants) * 100) : 0;
 
