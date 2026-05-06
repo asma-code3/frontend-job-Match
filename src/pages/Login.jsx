@@ -204,6 +204,7 @@ const Login = () => {
                 </label>
                 <input
                   id="login-email"
+                  name="email"
                   type="email"
                   className={`${inputBaseClass} ${email && !emailValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
                   placeholder="Enter email"
@@ -221,6 +222,7 @@ const Login = () => {
                 <div className="relative">
                   <input
                     id="login-password"
+                    name="password"
                     type={showPassword ? 'text' : 'password'}
                     className={`${inputBaseClass} pr-11 ${password && !passwordValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
                     placeholder="Enter password"

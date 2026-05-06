@@ -190,6 +190,7 @@ const Register = () => {
               />
 
               <input
+                name="name"
                 className={`${inputBaseClass} ${name && !nameValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
                 placeholder="Full name"
                 value={name}
@@ -202,6 +203,7 @@ const Register = () => {
               {name && !nameValid && <p className="px-1 text-[11px] text-red-500">Name must be between 2 and 80 characters.</p>}
 
               <input
+                name="email"
                 type="email"
                 className={`${inputBaseClass} ${email && !emailValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
                 placeholder="Email"
@@ -214,6 +216,7 @@ const Register = () => {
               <div className="space-y-2">
                 <div className="relative">
                   <input
+                    name="new-password"
                     type={showPassword ? 'text' : 'password'}
                     className={`${inputBaseClass} pr-11 ${password && !passwordValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
                     placeholder="Password"
@@ -254,10 +257,11 @@ const Register = () => {
               </div>
 
               <div className="relative">
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  className={`${inputBaseClass} pr-11 ${confirmPassword && password !== confirmPassword ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
-                  placeholder="Confirm Password"
+                  <input
+                    name="confirm-password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    className={`${inputBaseClass} pr-11 ${confirmPassword && password !== confirmPassword ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
+                    placeholder="Confirm Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
