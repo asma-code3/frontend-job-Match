@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-body: 'Manrope', 'Segoe UI', sans-serif;
+    --font-heading: 'Manrope', 'Segoe UI', sans-serif;
+
+    --brand-950: #0f172a;
+    --brand-900: #172554;
+    --brand-800: #1e3a8a;
+    --brand-700: #2563eb;
+    --brand-600: #3b82f6;
+    --brand-500: #60a5fa;
+    --accent-500: #38bdf8;
+
+    --surface-page: #eff6ff;
+    --surface-card: #ffffff;
+    --surface-muted: #eaf2ff;
+    --surface-soft: rgba(255, 255, 255, 0.76);
+
+    --line-soft: #dbe7f7;
+    --line-strong: #bfdbfe;
+
+    --text-main: #0f172a;
+    --text-subtle: #5f6f89;
+    --text-muted: #7f8da3;
+
+    --radius-md: 14px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --control-height: 46px;
+    --space-section: clamp(1rem, 1.8vw, 1.85rem);
+    --shadow-soft: 0 18px 40px rgba(37, 99, 235, 0.08);
+    --shadow-hover: 0 22px 50px rgba(30, 64, 175, 0.14);
+  }
+
+  html {
+    font-family: var(--font-body);
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-slate-800 antialiased;
+    background:
+      radial-gradient(circle at top left, rgba(96, 165, 250, 0.22), transparent 26%),
+      radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 24%),
+      linear-gradient(180deg, #f8fbff 0%, #edf4ff 48%, #f5f9ff 100%);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    font-size: 0.96rem;
+    color: var(--text-main);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--text-main);
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+
+  h1 { font-size: clamp(1.9rem, 2.7vw, 2.85rem); }
+  h2 { font-size: clamp(1.35rem, 2.1vw, 1.95rem); }
+  h3 { font-size: clamp(1.08rem, 1.55vw, 1.35rem); }
+
+  p {
+    font-size: 0.96rem;
+    color: var(--text-subtle);
+    line-height: 1.6;
+  }
+
+  a {
+    transition: color 0.2s ease, opacity 0.2s ease;
+  }
+
+  input, textarea, select {
+    @apply w-full px-4 py-2.5 text-sm border outline-none transition;
+    border-radius: var(--radius-lg);
+    border-color: var(--line-soft);
+    background: rgba(255, 255, 255, 0.92);
+    min-height: var(--control-height);
+    color: var(--text-main);
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    @apply ring-4 border-blue-400;
+    --tw-ring-color: rgba(59, 130, 246, 0.16);
+    background: #ffffff;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.18);
+    color: #0f172a;
+  }
+}
+
+@layer components {
+  .app-shell {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(125, 211, 252, 0.08), transparent 22%),
+      linear-gradient(180deg, rgba(248, 251, 255, 0.94), rgba(239, 246, 255, 0.92));
+  }
+
+  .page-shell {
+    @apply min-h-screen;
+    padding: var(--space-section);
+  }
+
+  .page-container {
+    @apply mx-auto w-full max-w-7xl space-y-8;
+  }
+
+  .hero-panel {
+    @apply relative overflow-hidden rounded-[28px] border px-6 py-7 shadow-sm;
+    border-color: rgba(191, 219, 254, 0.9);
+    background:
+      radial-gradient(circle at top left, rgba(125, 211, 252, 0.22), transparent 26%),
+      linear-gradient(135deg, rgba(30, 64, 175, 0.98) 0%, rgba(37, 99, 235, 0.92) 48%, rgba(14, 165, 233, 0.82) 100%);
+    box-shadow: 0 20px 45px rgba(30, 64, 175, 0.2);
+  }
+
+  .hero-panel::after {
+    content: '';
+    position: absolute;
+    inset: auto -40px -55px auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    filter: blur(4px);
+  }
+
+  .hero-panel h1,
+  .hero-panel h2,
+  .hero-panel h3,
+  .hero-panel p:not(.hero-kicker),
+  .hero-panel span:not(.hero-kicker) {
+    color: #ffffff;
+  }
+
+  .hero-kicker {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em];
+    color: #dbeafe;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .surface-card {
+    @apply border transition;
+    border-radius: var(--radius-xl);
+    border-color: var(--line-soft);
+    background: var(--surface-soft);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .surface-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--line-strong);
+  }
+
+  .kpi-card {
+    @apply p-6 transition flex flex-col justify-between;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--line-soft);
+    background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(239,246,255,0.96));
+    box-shadow: var(--shadow-soft);
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white transition;
+    border-radius: var(--radius-lg);
+    min-height: var(--control-height);
+    background: linear-gradient(120deg, var(--brand-800), var(--brand-700) 60%, var(--accent-500));
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 28px rgba(37, 99, 235, 0.34);
+    filter: brightness(1.03);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line-soft);
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--brand-800);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--brand-500);
+    color: var(--brand-700);
+    background: #ffffff;
+  }
+
+  .scroll-area {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .table-shell {
+    @apply overflow-hidden rounded-[24px] border;
+    border-color: var(--line-soft);
+    background: rgba(255,255,255,0.92);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .table-head {
+    @apply border-b;
+    border-color: var(--line-soft);
+    background: linear-gradient(180deg, #f8fbff, #eef5ff);
+  }
+
+  .table-head th {
+    @apply px-4 py-3 text-xs font-bold uppercase;
+    color: #5e6f89;
+    letter-spacing: 0.12em;
+  }
+
+  .table-row td {
+    @apply px-4 py-3 text-sm text-slate-700;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
