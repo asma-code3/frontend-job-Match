@@ -40,9 +40,8 @@ const ManageJobs = () => {
     const loadJobs = async () => {
       try {
         const data = await getJobs();
-        const mine = (data || []).filter((job) => job.postedBy === user?.id);
         if (!active) return;
-        setJobs(mine);
+        setJobs(data || []);
       } catch (error) {
         console.error('Failed to load jobs', error);
       }
@@ -91,6 +90,7 @@ const ManageJobs = () => {
   }, [user?.id]);
 
   const activeJobs = useMemo(() => jobs.filter((job) => job.status === 'Active').length, [jobs]);
+  const canManageJob = (job) => user?.role === 'admin' || job?.postedBy === user?.id;
   const filteredJobs = useMemo(() => {
     const q = search.trim().toLowerCase();
     return jobs.filter((job) => {
@@ -176,6 +176,7 @@ const ManageJobs = () => {
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-left">
                   <th className="p-5 text-xs font-bold uppercase tracking-wider text-slate-500">Job Title</th>
+                  <th className="p-5 text-xs font-bold uppercase tracking-wider text-slate-500">Owner</th>
                   <th className="p-5 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
                   <th className="p-5 text-xs font-bold uppercase tracking-wider text-slate-500">Applicants</th>
                   <th className="p-5 text-xs font-bold uppercase tracking-wider text-slate-500">Date Posted</th>
@@ -194,23 +195,46 @@ const ManageJobs = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="p-5">
+                      <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                        job.postedBy === user?.id
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        {job.postedBy === user?.id ? 'My job' : 'Platform job'}
+                      </span>
+                    </td>
                     <td className="p-5"><span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-inset ${getStatusStyle(job.status)}`}>{job.status || 'Active'}</span></td>
                     <td className="p-5">
-                      <Link
-                        to={`/applicants?jobId=${encodeURIComponent(job.id)}&jobTitle=${encodeURIComponent(job.title || '')}`}
-                        className="inline-flex items-center gap-2 rounded-full border border-pink-200 bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-800 hover:bg-pink-100"
-                      >
-                        <BsPeopleFill className="h-3.5 w-3.5" />
-                        {applicantsByJob[job.id] || 0} View
-                      </Link>
+                      {canManageJob(job) ? (
+                        <Link
+                          to={`/applicants?jobId=${encodeURIComponent(job.id)}&jobTitle=${encodeURIComponent(job.title || '')}`}
+                          className="inline-flex items-center gap-2 rounded-full border border-pink-200 bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-800 hover:bg-pink-100"
+                        >
+                          <BsPeopleFill className="h-3.5 w-3.5" />
+                          {applicantsByJob[job.id] || 0} View
+                        </Link>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
+                          View only
+                        </span>
+                      )}
                     </td>
                     <td className="p-5"><span className="text-sm font-medium text-slate-500">{new Date(job.createdAt).toLocaleDateString()}</span></td>
-                    <td className="p-5 text-right"><button onClick={() => handleDelete(job.id)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600" title="Delete"><MdDelete className="text-lg text-red-600 " /></button></td>
+                    <td className="p-5 text-right">
+                      {canManageJob(job) ? (
+                        <button onClick={() => handleDelete(job.id)} className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600" title="Delete">
+                          <MdDelete className="text-lg text-red-600 " />
+                        </button>
+                      ) : (
+                        <span className="text-xs font-semibold text-slate-400">No access</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
                 {filteredJobs.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="p-10 text-center text-sm text-slate-500">
+                    <td colSpan="6" className="p-10 text-center text-sm text-slate-500">
                       No jobs found. Start by posting a new job.
                     </td>
                   </tr>
