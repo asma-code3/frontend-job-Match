@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createJob } from '../services/jobService';
+import { getAdminUsers } from '../services/adminService';
+import { useAuth } from '../context/AuthContext';
 import { HiOutlineBriefcase, HiOutlineBuildingOffice2, HiOutlineCurrencyDollar } from 'react-icons/hi2';
 import StatusAlert from '../components/StatusAlert';
 
@@ -15,11 +17,40 @@ const INITIAL_FORM_DATA = {
 };
 
 const PostJob = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('success');
+  const [employers, setEmployers] = useState([]);
+  const [selectedEmployerId, setSelectedEmployerId] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    const loadEmployers = async () => {
+      if (user?.role !== 'admin') return;
+      try {
+        const users = await getAdminUsers();
+        if (!active) return;
+        setEmployers((users || []).filter((item) => item.role === 'employer'));
+      } catch (error) {
+        console.error('Failed to load employers for admin job posting', error);
+      }
+    };
+
+    loadEmployers();
+    return () => {
+      active = false;
+    };
+  }, [user?.role]);
+
+  const isAdmin = user?.role === 'admin';
+  const selectedEmployer = useMemo(
+    () => employers.find((item) => item.id === selectedEmployerId) || null,
+    [employers, selectedEmployerId]
+  );
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,13 +61,20 @@ const PostJob = () => {
     setSubmitting(true);
     setMessage('');
     try {
-      await createJob(formData);
+      const payload = isAdmin && selectedEmployerId
+        ? { ...formData, employerId: selectedEmployerId }
+        : formData;
+      await createJob(payload);
+      const successMessage = isAdmin && selectedEmployer
+        ? `Job posted successfully for ${selectedEmployer.name}.`
+        : 'Job posted successfully.';
       setMessageType('success');
-      setMessage('Job posted successfully.');
+      setMessage(successMessage);
       setFormData(INITIAL_FORM_DATA);
+      setSelectedEmployerId('');
       sessionStorage.setItem(
         'jobmatch_manage_jobs_notice',
-        JSON.stringify({ message: 'Job posted successfully.', type: 'success' })
+        JSON.stringify({ message: successMessage, type: 'success' })
       );
       window.setTimeout(() => {
         navigate('/manage-jobs');
@@ -71,6 +109,26 @@ const PostJob = () => {
       />
 
       <form onSubmit={handleSubmit} className="space-y-6 surface-card p-6 md:p-8">
+        {isAdmin ? (
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700">Post For Employer</label>
+            <select
+              value={selectedEmployerId}
+              onChange={(e) => setSelectedEmployerId(e.target.value)}
+            >
+              <option value="">Post as admin / platform job</option>
+              {employers.map((employer) => (
+                <option key={employer.id} value={employer.id}>
+                  {employer.name} ({employer.email})
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs text-slate-500">
+              If you select an employer, the job will appear inside that employer&apos;s job management and applicant flow.
+            </p>
+          </div>
+        ) : null}
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <label className="mb-1 inline-flex items-center gap-1 text-sm font-medium text-slate-700"><HiOutlineBuildingOffice2 className="h-4 w-4 text-blue-700" />Company</label>
