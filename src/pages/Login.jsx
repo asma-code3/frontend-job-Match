@@ -10,28 +10,22 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 const LOGIN_DRAFT_KEY = 'jobmatch_login_draft';
+const REMEMBERED_EMAIL_KEY = 'jobmatch_remembered_email';
 
 const Login = () => {
   const [email, setEmail] = useState(() => {
     if (typeof window === 'undefined') return '';
 
     try {
+      const rememberedEmail = localStorage.getItem(REMEMBERED_EMAIL_KEY);
+      if (rememberedEmail) return rememberedEmail;
       const savedDraft = sessionStorage.getItem(LOGIN_DRAFT_KEY);
       return savedDraft ? JSON.parse(savedDraft).email || '' : '';
     } catch {
       return '';
     }
   });
-  const [password, setPassword] = useState(() => {
-    if (typeof window === 'undefined') return '';
-
-    try {
-      const savedDraft = sessionStorage.getItem(LOGIN_DRAFT_KEY);
-      return savedDraft ? JSON.parse(savedDraft).password || '' : '';
-    } catch {
-      return '';
-    }
-  });
+  const [password, setPassword] = useState('');
   const [role, setRole] = useState(() => {
     if (typeof window === 'undefined') return 'seeker';
 
@@ -40,6 +34,15 @@ const Login = () => {
       return savedDraft ? JSON.parse(savedDraft).role || 'seeker' : 'seeker';
     } catch {
       return 'seeker';
+    }
+  });
+  const [rememberMe, setRememberMe] = useState(() => {
+    if (typeof window === 'undefined') return false;
+
+    try {
+      return Boolean(localStorage.getItem(REMEMBERED_EMAIL_KEY));
+    } catch {
+      return false;
     }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,11 +74,10 @@ const Login = () => {
       LOGIN_DRAFT_KEY,
       JSON.stringify({
         email,
-        password,
         role,
       })
     );
-  }, [email, password, role]);
+  }, [email, role]);
 
   const safeTimeout = useCallback((fn, ms) => {
     const id = setTimeout(fn, ms);
@@ -124,6 +126,11 @@ const Login = () => {
       const result = await login(email.trim().toLowerCase(), password, role);
 
       if (result.ok) {
+        if (rememberMe) {
+          localStorage.setItem(REMEMBERED_EMAIL_KEY, email.trim().toLowerCase());
+        } else {
+          localStorage.removeItem(REMEMBERED_EMAIL_KEY);
+        }
         if (result.actualRole && result.actualRole !== 'admin') {
           setRole(result.actualRole);
         }
@@ -229,6 +236,16 @@ const Login = () => {
                   Forgot password?
                 </Link>
               </div>
+
+              <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(event) => setRememberMe(event.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                />
+                Remember my email
+              </label>
 
               <div className="space-y-2">
                 <label className={labelClass}>Role</label>
