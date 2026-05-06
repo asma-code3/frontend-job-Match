@@ -127,6 +127,8 @@ const Login = () => {
         if (result.actualRole && result.actualRole !== 'admin') {
           setRole(result.actualRole);
         }
+        setEmail('');
+        setPassword('');
         sessionStorage.removeItem(LOGIN_DRAFT_KEY);
         showToast(result.message || 'Login successful!', 'success');
         safeTimeout(() => {
