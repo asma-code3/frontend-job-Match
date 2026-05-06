@@ -111,7 +111,7 @@ const SeekerDashboard = () => {
 
   const renderJobCard = (job, mode = 'match') => (
     <article key={job.id} className="rounded-[22px] border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_16px_32px_rgba(37,99,235,0.12)]">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 className="text-lg font-black text-slate-900">{job.title}</h3>
           <p className="mt-1 inline-flex items-center gap-2 text-sm font-medium text-slate-500">
@@ -137,7 +137,7 @@ const SeekerDashboard = () => {
   return (
     <div className="page-shell">
       <div className="page-container space-y-6">
-        <section className="hero-panel">
+        <section className="hero-panel px-4 py-5 sm:px-6 sm:py-7">
           <div className="grid gap-6 lg:grid-cols-[1.35fr_0.9fr]">
             <div className="space-y-5">
               <p className="hero-kicker">
@@ -145,7 +145,7 @@ const SeekerDashboard = () => {
                 Seeker Dashboard
               </p>
               <div className="space-y-3">
-                <h1 className="max-w-2xl text-4xl font-black tracking-tight md:text-5xl">
+                <h1 className="max-w-2xl text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
                   Welcome back, {user?.name || 'User'}
                 </h1>
                 <p className="max-w-2xl text-sm text-blue-50/95 md:text-base">
@@ -201,7 +201,7 @@ const SeekerDashboard = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-4 gap-4 ">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {primaryStats.map((item) => {
             const Icon = item.icon;
             return (
@@ -222,7 +222,7 @@ const SeekerDashboard = () => {
           })}
         </section>
 
-        <section className="grid grid-cols-2 gap-4 xl:grid-cols-[0.95fr_1.45fr]">
+        <section className="grid grid-cols-1 gap-4 xl:grid-cols-[0.95fr_1.45fr]">
           <div className="surface-card p-5 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl hover:border-blue-200">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -254,7 +254,7 @@ const SeekerDashboard = () => {
           </div>
 
           <div className="surface-card overflow-hidden">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5">
+            <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div>
                 <h2 className="inline-flex items-center gap-2 text-xl font-black text-slate-900">
                   <HiOutlineClipboardDocumentList className="h-5 w-5 text-blue-700" />
@@ -266,7 +266,7 @@ const SeekerDashboard = () => {
                 View all
               </Link>
             </div>
-            <div className="space-y-3 p-5">
+            <div className="space-y-3 p-4 sm:p-5">
               {loading ? (
                 <p className="rounded-2xl bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
                   Loading seeker dashboard...
@@ -276,7 +276,7 @@ const SeekerDashboard = () => {
                 const statusMeta = getStatusPill(app.status || 'Pending');
                 return (
                   <article key={app.id} className="rounded-[22px] border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_16px_32px_rgba(37,99,235,0.12)]">
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <h3 className="text-lg font-black text-slate-900">{app.jobTitle || '-'}</h3>
                         <p className="mt-1 text-sm text-slate-500">{app.company || '-'} • {new Date(app.createdAt).toLocaleDateString()}</p>
@@ -298,7 +298,7 @@ const SeekerDashboard = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-2 gap-6 xl:grid-cols-4 items-stretch">
+        <section className="grid grid-cols-1 gap-6 xl:grid-cols-2 items-stretch">
           <div className="surface-card p-5">
             <div className="mb-5 flex items-center justify-between gap-3">
               <div>
