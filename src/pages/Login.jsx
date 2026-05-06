@@ -6,6 +6,8 @@ import {
   HiOutlineCheckCircle,
   HiOutlineXCircle,
   HiOutlineXMark,
+  HiOutlineEye,
+  HiOutlineEyeSlash,
 } from 'react-icons/hi2';
 import { useAuth } from '../context/AuthContext';
 
@@ -45,6 +47,7 @@ const Login = () => {
       return false;
     }
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState({
     message: '',
@@ -215,16 +218,26 @@ const Login = () => {
                 <label className={labelClass} htmlFor="login-password">
                   Password
                 </label>
-                <input
-                  id="login-password"
-                  type="password"
-                  className={`${inputBaseClass} ${password && !passwordValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                  autoComplete="current-password"
-                />
+                <div className="relative">
+                  <input
+                    id="login-password"
+                    type={showPassword ? 'text' : 'password'}
+                    className={`${inputBaseClass} pr-11 ${password && !passwordValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-3 inline-flex items-center text-slate-400 transition hover:text-slate-700"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <HiOutlineEyeSlash className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                  </button>
+                </div>
                 <p className="text-[11px] text-slate-500">Must be at least 8 characters.</p>
               </div>
 
