@@ -35,22 +35,19 @@ const ManageJobs = () => {
   }, []);
 
   useEffect(() => {
+    let active = true;
+
     const loadJobs = async () => {
       try {
         const data = await getJobs();
         const mine = (data || []).filter((job) => job.postedBy === user?.id);
+        if (!active) return;
         setJobs(mine);
       } catch (error) {
         console.error('Failed to load jobs', error);
       }
     };
 
-    if (user?.id) {
-      loadJobs();
-    }
-  }, [user?.id]);
-
-  useEffect(() => {
     const loadApplicants = async () => {
       try {
         const data = await getApplicants();
@@ -59,15 +56,38 @@ const ManageJobs = () => {
           acc[key] = (acc[key] || 0) + 1;
           return acc;
         }, {});
+        if (!active) return;
         setApplicantsByJob(grouped);
       } catch (error) {
         console.error('Failed to load applicants count', error);
       }
     };
 
-    if (user?.id) {
+    const refreshAll = () => {
+      loadJobs();
       loadApplicants();
+    };
+
+    if (user?.id) {
+      refreshAll();
     }
+
+    const handleWindowFocus = () => {
+      if (user?.id) {
+        refreshAll();
+      }
+    };
+
+    const refreshTimer = user?.id ? window.setInterval(refreshAll, 15000) : null;
+    window.addEventListener('focus', handleWindowFocus);
+
+    return () => {
+      active = false;
+      if (refreshTimer) {
+        window.clearInterval(refreshTimer);
+      }
+      window.removeEventListener('focus', handleWindowFocus);
+    };
   }, [user?.id]);
 
   const activeJobs = useMemo(() => jobs.filter((job) => job.status === 'Active').length, [jobs]);

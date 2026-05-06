@@ -30,19 +30,39 @@ const Jobs = () => {
   const insightCardClass = 'rounded-[24px] border p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg';
 
   useEffect(() => {
-    const fetchJobs = async () => {
+    let active = true;
+
+    const fetchJobs = async (silent = false) => {
       try {
-        setLoading(true);
+        if (!silent) {
+          setLoading(true);
+        }
         const data = await getJobs();
+        if (!active) return;
         setJobs(data);
         setLoadError('');
       } catch (error) {
+        if (!active) return;
         setLoadError(error?.response?.data?.message || 'Failed to load jobs.');
       } finally {
+        if (!active || silent) return;
         setLoading(false);
       }
     };
+
+    const handleWindowFocus = () => {
+      fetchJobs(true);
+    };
+
     fetchJobs();
+    const refreshTimer = window.setInterval(() => fetchJobs(true), 15000);
+    window.addEventListener('focus', handleWindowFocus);
+
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', handleWindowFocus);
+    };
   }, []);
 
   const jobTypes = useMemo(() => {

@@ -25,20 +25,41 @@ const FindJobs = () => {
   const actionButtonClass = 'rounded-xl py-3 text-center text-sm font-semibold transition-all duration-300';
 
   useEffect(() => {
-    const loadJobs = async () => {
+    let active = true;
+
+    const loadJobs = async (silent = false) => {
       try {
-        setLoading(true);
-        setLoadError('');
+        if (!silent) {
+          setLoading(true);
+        }
+        if (!silent) {
+          setLoadError('');
+        }
         const data = await getJobs();
+        if (!active) return;
         setJobs(data);
       } catch (error) {
+        if (!active) return;
         setLoadError(error?.response?.data?.message || 'Failed to load jobs.');
       } finally {
+        if (!active || silent) return;
         setLoading(false);
       }
     };
 
+    const handleWindowFocus = () => {
+      loadJobs(true);
+    };
+
     loadJobs();
+    const refreshTimer = window.setInterval(() => loadJobs(true), 15000);
+    window.addEventListener('focus', handleWindowFocus);
+
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', handleWindowFocus);
+    };
   }, []);
 
   useEffect(() => {
