@@ -322,7 +322,7 @@ const SeekerDashboard = () => {
                 See all
               </Link>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
               {data.topMatches.map((job) => renderJobCard(job, 'match'))}
               {data.topMatches.length === 0 ? <p className="text-sm text-slate-500">No matches yet.</p> : null}
             </div>
@@ -341,7 +341,7 @@ const SeekerDashboard = () => {
                 Browse jobs
               </Link>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {data.recommendedJobs.map((job) => renderJobCard(job, 'recommended'))}
               {data.recommendedJobs.length === 0 ? <p className="text-sm text-slate-500">No recommendations yet.</p> : null}
             </div>
