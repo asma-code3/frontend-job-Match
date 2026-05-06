@@ -8,6 +8,8 @@ import {
   HiOutlineXCircle,
   HiOutlineUserPlus,
   HiOutlineXMark,
+  HiOutlineEye,
+  HiOutlineEyeSlash,
 } from 'react-icons/hi2';
 import { HiCheck, HiX } from 'react-icons/hi';
 import StatusAlert from '../components/StatusAlert';
@@ -20,6 +22,8 @@ const Register = () => {
   const [role, setRole] = useState('seeker');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const [honeypot, setHoneypot] = useState('');
 
@@ -208,17 +212,27 @@ const Register = () => {
               />
 
               <div className="space-y-2">
-                <input
-                  type="password"
-                  className={`${inputBaseClass} ${password && !passwordValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  maxLength={72}
-                  autoComplete="new-password"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className={`${inputBaseClass} pr-11 ${password && !passwordValid ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    maxLength={72}
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-3 inline-flex items-center text-slate-400 transition hover:text-slate-700"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <HiOutlineEyeSlash className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                  </button>
+                </div>
 
                 <div className="flex items-center gap-2 px-1">
                   <div className="flex gap-1 flex-1">
@@ -239,15 +253,25 @@ const Register = () => {
                 )}
               </div>
 
-              <input
-                type="password"
-                className={`${inputBaseClass} ${confirmPassword && password !== confirmPassword ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  className={`${inputBaseClass} pr-11 ${confirmPassword && password !== confirmPassword ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''}`}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-3 inline-flex items-center text-slate-400 transition hover:text-slate-700"
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                >
+                  {showConfirmPassword ? <HiOutlineEyeSlash className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                </button>
+              </div>
               {confirmPassword && !confirmPasswordValid && <p className="px-1 text-[11px] text-red-500">Passwords must match exactly.</p>}
 
               <div className="grid grid-cols-2 gap-2 text-xs">
