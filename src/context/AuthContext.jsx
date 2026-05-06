@@ -19,17 +19,24 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, expectedRole) => {
     try {
       const { user: apiUser, token } = await loginUser({ email, password });
+      const actualRole = apiUser?.role || '';
+
+      if (expectedRole && actualRole && actualRole !== expectedRole && actualRole !== 'admin') {
+        return {
+          ok: false,
+          message: `This account is registered as ${actualRole}. Please choose the ${actualRole} role to continue.`,
+          actualRole,
+        };
+      }
+
       const userData = apiUser;
       localStorage.setItem('jobmatch_token', token);
       localStorage.setItem('jobmatch_user', JSON.stringify(userData));
       setUser(userData);
       return {
         ok: true,
-        message:
-          expectedRole && apiUser?.role && apiUser.role !== expectedRole && apiUser.role !== 'admin'
-            ? `Logged in as ${apiUser.role}.`
-            : '',
-        actualRole: apiUser?.role || '',
+        message: '',
+        actualRole,
       };
     } catch (error) {
       console.error('Login failed', error);
