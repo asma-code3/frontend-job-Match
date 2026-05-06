@@ -211,25 +211,31 @@ const SeekerDashboard = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {primaryStats.map((item) => {
-            const Icon = item.icon;
-            return (
-              <article key={item.label} className="surface-card  p-5 flex flex-col justify-between">
-                <div className="flex items-start justify-between gap-4 hover:to-blue-300 ">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">{item.label}</p>
-                    <p className="mt-3 text-3xl font-black text-slate-900">{item.value}</p>
+        <section className="surface-card p-5 sm:p-6">
+          <div className="mb-4">
+            <h2 className="text-xl font-black text-slate-900">Overview</h2>
+            <p className="mt-1 text-sm text-slate-500">Your key application and matching stats in one place.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {primaryStats.map((item) => {
+              const Icon = item.icon;
+              return (
+                <article key={item.label} className="rounded-[24px] border border-slate-200 bg-white/90 p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">{item.label}</p>
+                      <p className="mt-3 text-3xl font-black text-slate-900">{item.value}</p>
+                    </div>
+                    <span className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${item.shell}`}>
+                      <Icon className="h-6 w-6" />
+                    </span>
                   </div>
-                  <span className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${item.shell}`}>
-                    <Icon className="h-6 w-6" />
-                  </span>
-                </div>
-                <div className={`mt-4 h-1.5 rounded-full bg-gradient-to-r ${item.bar}`} />
-                <p className="mt-3 text-sm text-slate-500">{item.note}</p>
-              </article>
-            );
-          })}
+                  <div className={`mt-4 h-1.5 rounded-full bg-gradient-to-r ${item.bar}`} />
+                  <p className="mt-3 text-sm text-slate-500">{item.note}</p>
+                </article>
+              );
+            })}
+          </div>
         </section>
 
         <section className="grid grid-cols-1 gap-4 xl:grid-cols-[0.95fr_1.45fr]">
